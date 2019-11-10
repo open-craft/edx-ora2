@@ -724,6 +724,9 @@ def serialize_content_to_xml(oa_block, root):
     if oa_block.white_listed_file_types:
         root.set('white_listed_file_types', six.text_type(oa_block.white_listed_file_types_string))
 
+    if oa_block.allow_multiple_files is not None:
+        root.set('allow_multiple_files', str(oa_block.allow_multiple_files))
+
     if oa_block.allow_latex is not None:
         root.set('allow_latex', six.text_type(oa_block.allow_latex))
 
@@ -875,6 +878,10 @@ def parse_from_xml(root):
     if 'white_listed_file_types' in root.attrib:
         white_listed_file_types = six.text_type(root.attrib['white_listed_file_types'])
 
+    allow_multiple_files = True
+    if 'allow_multiple_files' in root.attrib:
+        allow_multiple_files = _parse_boolean(str(root.attrib['allow_multiple_files']))
+
     allow_latex = False
     if 'allow_latex' in root.attrib:
         allow_latex = _parse_boolean(six.text_type(root.attrib['allow_latex']))
@@ -934,6 +941,7 @@ def parse_from_xml(root):
         'allow_file_upload': allow_file_upload,
         'file_upload_type': file_upload_type,
         'white_listed_file_types': white_listed_file_types,
+        'allow_multiple_files': allow_multiple_files,
         'allow_latex': allow_latex,
         'group_access': group_access,
         'leaderboard_show': leaderboard_show
