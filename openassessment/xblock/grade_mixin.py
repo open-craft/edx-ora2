@@ -1,7 +1,6 @@
 """
 Grade step in the OpenAssessment XBlock.
 """
-from __future__ import absolute_import
 
 import copy
 
@@ -585,3 +584,134 @@ class GradeMixin:
                     part['option']['label'] = option_labels.get(option_label_key, part['option']['name'])
 
         return assessment
+
+    def _get_assessment_type(self, workflow):
+        """
+        Determine which assessment is decisive in determining the grade.
+        Args:
+            workflow (dict): The serialized Workflow model.
+        Returns:
+            str: Type of decisive assessment. Possible values are self, staff, peer.
+        """
+        score = workflow['score']
+        complete = score is not None
+
+        if "staff-assessment" in self.assessment_steps:
+            return "staff"
+
+        # Edge case: staff overrides the grade.
+        # If a score is overriden by staff, it'll always have an
+        # attached annotation type with the `staff_defined` value,
+        # so we look for that in this problem's annotation and
+        # return staff if it's found.
+        grade_annotation_types = [annotation['annotation_type'] for annotation in (score or {}).get("annotations", [])]
+        if complete and "staff_defined" in grade_annotation_types:
+            return "staff"
+
+        # For other cases, we just need to figure out the
+        # priority of each (either peer or self).
+        # Just loop over the values and return the first one
+        # after staff.
+        for _assessment_type in workflow["assessment_score_priority"]:
+            # assessment_step would always have staff in it, so skip it
+            # while checking the priority here.
+            if _assessment_type == "staff":
+                continue
+
+            if "{}-assessment".format(_assessment_type) in self.assessment_steps:
+                return _assessment_type
+
+        return None  # Just to make pylint happy
+
+    def _get_score_explanation(self, workflow):
+        """
+        Return a string which explains how grade is calculated for an ORA assessment
+        (which is complete i.e all assessments have been done) based on assessment_steps.
+        Args:
+            workflow (dict): The serialized Workflow model.
+        Returns:
+            str: Message explainaing how grade is determined.
+        """
+        score = workflow['score']
+        complete = score is not None
+
+        assessment_type = self._get_assessment_type(workflow)
+
+        sentences = {
+            "staff": _("The grade for this problem is determined by your Staff Grade."),
+            "peer": _(
+                "The grade for this problem is determined by the median score of "
+                "your Peer Assessments."
+            ),
+            "self": _("The grade for this problem is determined by your Self Assessment.")
+        }
+        second_sentence = sentences.get(assessment_type, "")
+
+        if complete:
+            first_sentence = _(
+                "You have successfully completed this problem and received a {earned_points}/{total_points}."
+            ).format(earned_points=score["points_earned"], total_points=score["points_possible"])
+        else:
+            first_sentence = ""
+            # Special Case i.e If the submission only have peer assessment
+            if "peer-assessment" in self.assessment_steps and "self-assessment" not in self.assessment_steps and \
+               "staff-assessment" not in self.assessment_steps:
+                first_sentence = _(
+                    "You have not yet received all necessary peer reviews to determine your final grade."
+                )
+
+        return "{} {}".format(first_sentence, second_sentence).strip()
+
+    def generate_report_data(self, user_state_iterator, limit_responses=None):
+        """
+        Return a list of student responses and assessments for this block in a readable way.
+
+        Arguments:
+            user_state_iterator: iterator over UserStateClient objects.
+                E.g. the result of user_state_client.iter_all_for_block(block_key)
+            limit_responses (int|None): maximum number of responses to include.
+                Set to None (default) to include all.
+        Returns:
+            each call yields a tuple like:
+                ("my_username", {
+                    'Submission ID': 'c6551...',
+                    'Item ID': 5,
+                    'Anonymized Student ID': 'c801..',
+                    'Assessment ID': 4,
+                    'Assessment Scored Date': '2020-02-01',
+                    'Assessment Scored Time': '10:03:07.218280+00:00',
+                    'Assessment Type': 'PE',
+                    'Anonymous Scorer Id': '6e9a...',
+                    'Criterion 1: Ideas": 'Poor',
+                    'Points 1': 0,
+                    'Median Score 1': 0,
+                    'Feedback 1': 'Does not answer the question.',
+                    'Criterion 2: Content": 'Excellent',
+                    'Points 2': 3,
+                    'Median Score 2': 3.0,
+                    'Feedback 2': 'Well described.',
+                    'Criteria Count': 'Well described.',
+                    'Overall Feedback': 'try again',
+                    'Date/Time Final Score Given': 2020-02-01 10:03:07.218280+00:00',,
+                    'Final Score Points Earned': 1,
+                    'Final Score Points Possible': 5,
+                    'Feedback Statements Selected': "",
+                    'Feedback on Assessment': "",
+                    'Response files': 'http://lms.url/...',
+                    'Response': '{"file_descriptions"...}',
+                    'Assessment scored At': 2020-02-01 10:03:07.218280+00:00',,
+                })
+        """
+        from openassessment.data import OraAggregateData
+
+        xblock_id = self.get_xblock_id()
+        num_rows = 0
+        for user_state in user_state_iterator:
+            submission_uuid = user_state.state.get('submission_uuid')
+            for row in OraAggregateData.generate_assessment_data(xblock_id, submission_uuid):
+                num_rows += 1
+                yield (user_state.username, row)
+
+            if limit_responses is not None and num_rows >= limit_responses:
+                # End the iterator here
+                break
