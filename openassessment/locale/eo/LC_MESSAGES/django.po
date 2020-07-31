@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-ora2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-11 10:47-0400\n"
+"POT-Creation-Date: 2020-07-30 21:45-0400\n"
 "PO-Revision-Date: 2014-06-04 15:41-0400\n"
 "Last-Translator: Muhammad Ayub khan <ayubkhan@edx.org>\n"
 "Language-Team: openedx-translation <openedx-translation@googlegroups.com>\n"
@@ -66,6 +66,91 @@ msgid "Example {example_number} is missing an option for \"{criterion_name}\""
 msgstr ""
 "Éxämplé {example_number} ïs mïssïng än öptïön för \"{criterion_name}\" "
 "Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя #"
+
+#: openassessment/data.py
+#, python-brace-format
+msgid "Criterion {number}: {label}"
+msgstr "Çrïtérïön {number}: {label} Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт#"
+
+#: openassessment/data.py
+#, python-brace-format
+msgid "Points {number}"
+msgstr "Pöïnts {number} Ⱡ'σяєм ιρѕυм ∂σłσ#"
+
+#: openassessment/data.py
+#, python-brace-format
+msgid "Median Score {number}"
+msgstr "Médïän Sçöré {number} Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αм#"
+
+#: openassessment/data.py
+#, python-brace-format
+msgid "Feedback {number}"
+msgstr "Féédßäçk {number} Ⱡ'σяєм ιρѕυм ∂σłσя ѕ#"
+
+#: openassessment/data.py
+msgid "Item ID"
+msgstr "Ìtém ÌD Ⱡ'σяєм ιρѕυм #"
+
+#: openassessment/data.py
+msgid "Submission ID"
+msgstr "Süßmïssïön ÌD Ⱡ'σяєм ιρѕυм ∂σłσя ѕι#"
+
+#: openassessment/data.py
+msgid "Anonymized Student ID"
+msgstr "Ànönýmïzéd Stüdént ÌD Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, #"
+
+#: openassessment/data.py
+msgid "Assessment ID"
+msgstr "Àsséssmént ÌD Ⱡ'σяєм ιρѕυм ∂σłσя ѕι#"
+
+#: openassessment/data.py
+msgid "Assessment Scored Date"
+msgstr "Àsséssmént Sçöréd Däté Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢#"
+
+#: openassessment/data.py
+msgid "Assessment Scored Time"
+msgstr "Àsséssmént Sçöréd Tïmé Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢#"
+
+#: openassessment/data.py
+msgid "Assessment Type"
+msgstr "Àsséssmént Týpé Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт α#"
+
+#: openassessment/data.py
+msgid "Anonymous Scorer Id"
+msgstr "Ànönýmöüs Sçörér Ìd Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт,#"
+
+#: openassessment/data.py
+#: openassessment/templates/openassessmentblock/staff_area/oa_student_info_assessment_detail.html
+msgid "Overall Feedback"
+msgstr "Övéräll Féédßäçk Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αм#"
+
+#: openassessment/data.py
+msgid "Assessment Scored At"
+msgstr "Àsséssmént Sçöréd Àt Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, #"
+
+#: openassessment/data.py
+msgid "Date/Time Final Score Given"
+msgstr "Däté/Tïmé Fïnäl Sçöré Gïvén Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє#"
+
+#: openassessment/data.py
+msgid "Final Score Earned"
+msgstr "Fïnäl Sçöré Éärnéd Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт#"
+
+#: openassessment/data.py
+msgid "Final Score Possible"
+msgstr "Fïnäl Sçöré Pössïßlé Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, #"
+
+#: openassessment/data.py
+msgid "Feedback Statements Selected"
+msgstr "Féédßäçk Stätéménts Séléçtéd Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢#"
+
+#: openassessment/data.py
+msgid "Feedback on Assessment"
+msgstr "Féédßäçk ön Àsséssmént Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢#"
+
+#: openassessment/data.py
+msgid "Response Files"
+msgstr "Réspönsé Fïlés Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт#"
 
 #: openassessment/templates/openassessmentblock/edit/oa_edit.html
 msgid "Save"
@@ -138,6 +223,30 @@ msgstr ""
 "réspönsé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєт#"
 
 #: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
+msgid "Allow Multiple Files"
+msgstr "Àllöw Mültïplé Fïlés Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, #"
+
+#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
+#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
+#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
+msgid "False"
+msgstr "Fälsé Ⱡ'σяєм ιρѕ#"
+
+#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
+#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
+#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
+msgid "True"
+msgstr "Trüé Ⱡ'σяєм ι#"
+
+#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
+msgid ""
+"Specify whether learners can upload more than one file. Has no effect if "
+"File Uploads Response is None."
+msgstr ""
+"Spéçïfý whéthér léärnérs çän üplöäd möré thän öné fïlé. Häs nö éfféçt ïf "
+"Fïlé Ûplöäds Réspönsé ïs Nöné. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αм#"
+
+#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
 msgid "File Upload Types"
 msgstr "Fïlé Ûplöäd Týpés Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмє#"
 
@@ -184,16 +293,6 @@ msgstr ""
 #: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
 msgid "Allow LaTeX Responses"
 msgstr "Àllöw LäTéX Réspönsés Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, #"
-
-#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
-#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
-msgid "False"
-msgstr "Fälsé Ⱡ'σяєм ιρѕ#"
-
-#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
-#: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
-msgid "True"
-msgstr "Trüé Ⱡ'σяєм ι#"
 
 #: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html
 msgid "Specify whether learners can write LaTeX formatted strings"
@@ -1456,6 +1555,12 @@ msgid "We could not delete files"
 msgstr "Wé çöüld nöt délété fïlés Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕ#"
 
 #: openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "Select one or more files to upload for this submission."
+msgstr ""
+"Séléçt öné ör möré fïlés tö üplöäd för thïs süßmïssïön. Ⱡ'σяєм ιρѕυм ∂σłσя "
+"ѕιт αмєт, ¢σηѕє¢тєтυя α#"
+
+#: openassessment/templates/openassessmentblock/response/oa_response.html
 msgid "Select a file to upload for this submission."
 msgstr ""
 "Séléçt ä fïlé tö üplöäd för thïs süßmïssïön. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
@@ -1464,6 +1569,10 @@ msgstr ""
 #: openassessment/templates/openassessmentblock/response/oa_response.html
 msgid "Upload files"
 msgstr "Ûplöäd fïlés Ⱡ'σяєм ιρѕυм ∂σłσя ѕ#"
+
+#: openassessment/templates/openassessmentblock/response/oa_response.html
+msgid "Upload file"
+msgstr "Ûplöäd fïlé Ⱡ'σяєм ιρѕυм ∂σłσя #"
 
 #: openassessment/templates/openassessmentblock/response/oa_response.html
 msgid "You may continue to work on your response until you submit it."
@@ -2019,10 +2128,6 @@ msgstr "Féédßäçk Ⱡ'σяєм ιρѕυм ∂#"
 msgid "Points Possible"
 msgstr "Pöïnts Pössïßlé Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт α#"
 
-#: openassessment/templates/openassessmentblock/staff_area/oa_student_info_assessment_detail.html
-msgid "Overall Feedback"
-msgstr "Övéräll Féédßäçk Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αм#"
-
 #: openassessment/templates/openassessmentblock/student_training/student_training.html
 msgid "Learn to Assess Responses"
 msgstr "Léärn tö Àsséss Réspönsés Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕ#"
@@ -2245,6 +2350,43 @@ msgstr "Wäïtïng för péér révïéws Ⱡ'σяєм ιρѕυм ∂σłσя ѕ
 #: openassessment/xblock/grade_mixin.py
 msgid "Peer"
 msgstr "Péér Ⱡ'σяєм ι#"
+
+#: openassessment/xblock/grade_mixin.py
+msgid "The grade for this problem is determined by your Staff Grade."
+msgstr ""
+"Thé grädé för thïs prößlém ïs détérmïnéd ßý ýöür Stäff Grädé. Ⱡ'σяєм ιρѕυм "
+"∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α#"
+
+#: openassessment/xblock/grade_mixin.py
+msgid ""
+"The grade for this problem is determined by the median score of your Peer "
+"Assessments."
+msgstr ""
+"Thé grädé för thïs prößlém ïs détérmïnéd ßý thé médïän sçöré öf ýöür Péér "
+"Àsséssménts. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢#"
+
+#: openassessment/xblock/grade_mixin.py
+msgid "The grade for this problem is determined by your Self Assessment."
+msgstr ""
+"Thé grädé för thïs prößlém ïs détérmïnéd ßý ýöür Sélf Àsséssmént. Ⱡ'σяєм "
+"ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя α#"
+
+#: openassessment/xblock/grade_mixin.py
+#, python-brace-format
+msgid ""
+"You have successfully completed this problem and received a "
+"{earned_points}/{total_points}."
+msgstr ""
+"Ýöü hävé süççéssfüllý çömplétéd thïs prößlém änd réçéïvéd ä "
+"{earned_points}/{total_points}. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢тєтυя #"
+
+#: openassessment/xblock/grade_mixin.py
+msgid ""
+"You have not yet received all necessary peer reviews to determine your final"
+" grade."
+msgstr ""
+"Ýöü hävé nöt ýét réçéïvéd äll néçéssärý péér révïéws tö détérmïné ýöür fïnäl"
+" grädé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, ¢σηѕє¢т#"
 
 #: openassessment/xblock/peer_assessment_mixin.py
 msgid "You must submit a response before you can perform a peer assessment."
@@ -2588,6 +2730,12 @@ msgid "There was an error uploading your file."
 msgstr ""
 "Théré wäs än érrör üplöädïng ýöür fïlé. Ⱡ'σяєм ιρѕυм ∂σłσя ѕιт αмєт, "
 "¢σηѕє¢тєтυя#"
+
+#: openassessment/xblock/submission_mixin.py
+msgid "Only a single file upload is allowed for this assessment."
+msgstr ""
+"Önlý ä sïnglé fïlé üplöäd ïs ällöwéd för thïs ässéssmént. Ⱡ'σяєм ιρѕυм ∂σłσя"
+" ѕιт αмєт, ¢σηѕє¢тєтυя α#"
 
 #: openassessment/xblock/submission_mixin.py
 msgid "Content type must be GIF, PNG or JPG."

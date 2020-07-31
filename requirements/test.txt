@@ -51,7 +51,7 @@ jsonpointer==2.0          # via jsonpatch
 jsonschema==3.2.0         # via aws-sam-translator, cfn-lint
 junit-xml==1.9            # via cfn-lint
 lazy==1.4                 # via -r requirements/base.txt
-libsass==0.20.0           # via -r requirements/base.txt
+libsass==0.19.4           # via -r requirements/base.txt
 loremipsum==1.0.5         # via -c requirements/constraints.txt, -r requirements/base.txt
 lxml==4.5.1               # via -r requirements/base.txt, xblock
 markupsafe==1.1.1         # via -r requirements/base.txt, jinja2, xblock

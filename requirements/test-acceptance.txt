@@ -54,7 +54,7 @@ jsonpointer==2.0          # via -r requirements/test.txt, jsonpatch
 jsonschema==3.2.0         # via -r requirements/test.txt, aws-sam-translator, cfn-lint
 junit-xml==1.9            # via -r requirements/test.txt, cfn-lint
 lazy==1.4                 # via -r requirements/test.txt, bok-choy
-libsass==0.20.0           # via -r requirements/test.txt
+libsass==0.19.4           # via -r requirements/test.txt
 loremipsum==1.0.5         # via -c requirements/constraints.txt, -r requirements/test.txt
 lxml==4.5.1               # via -r requirements/test.txt, xblock
 markupsafe==1.1.1         # via -r requirements/test.txt, jinja2, xblock
