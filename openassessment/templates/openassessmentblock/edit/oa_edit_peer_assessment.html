@@ -15,7 +15,7 @@
         </p>
         <p class="openassessment_description">
             {% trans "Configuration: For this step to be configured you must specify the number of peer reviews a student will be assessed with, and the number of peer a student must grade. Additional options can be specified." %}
-        </p> 
+        </p>
         <div id="peer_assessment_settings_editor" class="assessment_settings_wrapper {% if not assessments.peer_assessment %} is--hidden {% endif %}">
             <p class="openassessment_view_details">
                 <a id="peer_assessment_settings_editor_show_details" class="{% if not assessments.student_training %} is--hidden {% endif %}" href="#">
@@ -36,6 +36,64 @@
                         <input id="peer_assessment_graded_by" class="input setting-input" type="number" value="{{ assessments.peer_assessment.must_be_graded_by }}" min="0" max="99">
                     </div>
                     <p class="setting-help">{% trans "Specify the number of learners that each response must be assessed by. Valid numbers are 0 to 99."%}</p>
+                </li>
+                <li class="field comp-setting-entry">
+                  <div class="wrapper-comp-setting">
+                    <label for="peer_assessment_enable_flexible_grading" class="setting-label">
+                      {% trans "Enable Flexible Peer Grade Averaging"%}
+                    </label>
+                    <select id="peer_assessment_enable_flexible_grading" class="input setting-input">
+                      <option value="0">{% trans "False"%}</option>
+                      <option value="1" {% if assessments.peer_assessment.enable_flexible_grading %}selected="true"{% endif %}>
+                        {% trans "True"%}
+                      </option>
+                    </select>
+                  </div>
+                  <p class="setting-help">
+                    {% trans "Learners who have received a minimum of {floor-30% of required peer-reviews configuration value} who have waited longer than 7 days will be given their grade instead of having to wait longer for more peer reviews"%}
+                  </p>
+                </li>
+                <li class="field comp-setting-entry">
+                  <div class="wrapper-comp-setting">
+                        <label for="peer_assessment_start_date" class="setting-label">{% trans "Start Date" %}</label>
+                        <input
+                            id="peer_assessment_start_date"
+                            type="text"
+                            class="input setting-input"
+                            value="{{ assessments.peer_assessment.start|utc|date:"Y-m-d" }}"
+                        >
+                    </div>
+                    <div class="wrapper-comp-setting">
+                        <label for="peer_assessment_start_time" class="setting-label">{% trans "Start Time" %}</label>
+                        <input
+                            id="peer_assessment_start_time"
+                            type="text"
+                            class="input setting-input"
+                            value="{{ assessments.peer_assessment.start|utc|date:"H:i" }}"
+                        >
+                    </div>
+                    <p class="setting-help">{% trans "Enter the date and time when learners can begin assessing peer responses." %}</p>
+                </li>
+                <li class="field comp-setting-entry">
+                    <div class="wrapper-comp-setting">
+                        <label for="peer_assessment_due_date" class="setting-label">{% trans "Due Date" %}</label>
+                        <input
+                            id="peer_assessment_due_date"
+                            type="text"
+                            class="input setting-input"
+                            value="{{ assessments.peer_assessment.due|utc|date:"Y-m-d" }}"
+                        >
+                    </div>
+                    <div class="wrapper-comp-setting">
+                        <label for="peer_assessment_due_time" class="setting-label">{% trans "Due Time" %}</label>
+                        <input
+                            id="peer_assessment_due_time"
+                            type="text"
+                            class="input setting-input"
+                            value="{{ assessments.peer_assessment.due|utc|date:"H:i" }}"
+                        >
+                    </div>
+                    <p class="setting-help">{% trans "Enter the date and time when all peer assessments must be complete." %}</p>
                 </li>
             </ul>
         </div>

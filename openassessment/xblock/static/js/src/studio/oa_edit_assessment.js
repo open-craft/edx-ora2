@@ -67,6 +67,7 @@ OpenAssessment.EditPeerAssessmentView.prototype = {
      {
          must_grade: 5,
          must_be_graded_by: 2,
+         enable_flexible_grading: true,
          start: null,
          due: "2014-04-1T00:00"
      }
@@ -75,6 +76,7 @@ OpenAssessment.EditPeerAssessmentView.prototype = {
         return {
             must_grade: this.mustGradeNum(),
             must_be_graded_by: this.mustBeGradedByNum(),
+            enable_flexible_grading: this.enableFlexibleGrading(),
             start: this.startDatetime(),
             due: this.dueDatetime(),
         };
@@ -128,6 +130,21 @@ OpenAssessment.EditPeerAssessmentView.prototype = {
     mustBeGradedByNum: function(num) {
         if (num !== undefined) {this.mustBeGradedByField.set(num);}
         return this.mustBeGradedByField.get();
+    },
+
+    /**
+     Get or set the flexible grading setting to enabled/disabled
+
+     Args:
+     enabled (bool, optional): If provided, set `enable_flexible_grading` to the given value
+
+     Returns:
+     boolean
+    **/
+    enableFlexibleGrading: function(isEnabled) {
+        var sel = $('#peer_assessment_enable_flexible_grading', this.element);
+        if (isEnabled !== undefined) { self.val(isEnabled ? "0" : "1") }
+        return sel.val() === "1";
     },
 
     /**
