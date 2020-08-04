@@ -24,17 +24,6 @@ logger = logging.getLogger("openassessment.assessment.api.peer")  # pylint: disa
 PEER_TYPE = "PE"
 
 
-def _required_peer_grades(workflow, peer_requirements):
-    FLEXIBLE_GRADING_DAYS = 7
-    FLEXIBLE_GRADE_FACTOR = 0.7
-
-    days_elapsed = (timezone.now().date() - workflow.created_at.date()).days
-
-    if peer_requirements.get("enable_flexible_grading") and days_elapsed >= FLEXIBLE_GRADING_DAYS:
-        return int(peer_requirements["must_be_graded_by"] * FLEXIBLE_GRADE_FACTOR)
-    return peer_requirements["must_be_graded_by"]
-
-
 def submitter_is_finished(submission_uuid, peer_requirements):
     """
     Check whether the submitter has made the required number of assessments.
@@ -160,6 +149,9 @@ def get_score(submission_uuid, peer_requirements):
         contributing_assessments information, along with a None staff_id.
 
     """
+    FLEXIBLE_GRADING_DAYS = 7
+    FLEXIBLE_GRADE_FACTOR = 0.7
+
     if peer_requirements is None:
         return None
 
@@ -179,7 +171,17 @@ def get_score(submission_uuid, peer_requirements):
         assessment__score_type=PEER_TYPE
     ).order_by('-assessment')
 
-    submission_finished = items.count() >= _required_peer_grades(workflow, peer_requirements)
+    # Check if enough peers have graded this submission
+    required_peer_grades = peer_requirements["must_be_graded_by"]
+
+    # If flexible grading is enabled, we might present the score earlier and
+    # the number of required peer grades is reduced.
+    days_elapsed = (timezone.now().date() - workflow.created_at.date()).days
+
+    if peer_requirements.get("enable_flexible_grading") and days_elapsed >= FLEXIBLE_GRADING_DAYS:
+        required_peer_grades = int(peer_requirements["must_be_graded_by"] * FLEXIBLE_GRADE_FACTOR)
+
+    submission_finished = items.count() >= required_peer_grades
     if not submission_finished:
         return None
 
