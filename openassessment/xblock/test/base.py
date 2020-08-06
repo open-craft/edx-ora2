@@ -2,7 +2,6 @@
 """
 Base class for handler-level testing of the XBlock.
 """
-from __future__ import absolute_import, print_function
 
 import copy
 from functools import wraps
@@ -10,7 +9,6 @@ import json
 import os.path
 
 import mock
-from six.moves import zip
 
 from openassessment.assessment.api import peer as peer_api
 from openassessment.assessment.api import self as self_api

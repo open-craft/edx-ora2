@@ -3,17 +3,21 @@ Aggregate data for openassessment.
 """
 from __future__ import absolute_import
 
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
+from itertools import chain
 import csv
 import json
 
 import six
 
 from django.conf import settings
+from django.utils.translation import ugettext as _
+from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from openassessment.assessment.models import Assessment, AssessmentFeedback, AssessmentPart
 from openassessment.workflow.models import AssessmentWorkflow, TeamAssessmentWorkflow
 from submissions import api as sub_api
+from openassessment.xblock.openassessmentblock import OpenAssessmentBlock
 
 
 class CsvWriter:
@@ -409,6 +413,34 @@ class OraAggregateData:
         return returned_string
 
     @classmethod
+    def _build_assessment_parts_array(cls, assessment, median_scores):
+        """
+        Args:
+            assessment - assessment containing the parts that we would like to report on.
+            median_scores - dictionary with criterion name keys and median score values,
+               as returned by Assessment.get_median_score_dict()
+
+        Returns:
+            OrderedDict that contains an entries for each criterion of the assessment(s).
+        """
+        parts = OrderedDict()
+        number = 1
+        for part in assessment.parts.order_by('criterion__order_num'):
+            option_label = None
+            option_points = None
+            if part.option:
+                option_label = part.option.label
+                option_points = part.option.points
+
+            criterion_col_label = _(u'Criterion {number}: {label}').format(number=number, label=part.criterion.label)
+            parts[criterion_col_label] = option_label or ''
+            parts[_('Points {number}').format(number=number)] = option_points or 0
+            parts[_('Median Score {number}').format(number=number)] = median_scores.get(part.criterion.name)
+            parts[_('Feedback {number}').format(number=number)] = part.feedback or ''
+            number += 1
+        return parts
+
+    @classmethod
     def _build_feedback_options_cell(cls, assessments):
         """
         Args:
@@ -438,6 +470,25 @@ class OraAggregateData:
         except AssessmentFeedback.DoesNotExist:
             return u""
         return feedback.feedback_text
+
+    @classmethod
+    def _build_response_file_links(cls, submission):
+        """
+        Args:
+            submission - object
+        Returns:
+            string that contains newline-separated URLs to each of the files uploaded for this submission.
+        """
+        file_links = ''
+        sep = "\n"
+        base_url = getattr(settings, 'LMS_ROOT_URL', '')
+
+        file_downloads = OpenAssessmentBlock.get_download_urls_from_submission(submission)
+        for url, _description, _filename, _show_delete in file_downloads:
+            if file_links:
+                file_links += sep
+            file_links += urljoin(base_url, url)
+        return file_links
 
     @classmethod
     def collect_ora2_data(cls, course_id):
@@ -507,6 +558,129 @@ class OraAggregateData:
         return header, rows
 
     @classmethod
+    def collect_ora2_summary(cls, course_id):
+        """
+        Query database for aggregated ora2 summary data.
+
+        Args:
+            course_id (string) - the course id of the course whose data we would like to return
+
+        Returns:
+            A tuple containing two lists: headers and data.
+
+            headers is a list containing strings corresponding to the column headers of the data.
+            data is a list of lists, where each sub-list corresponds to a row in the table of all the data
+                for this course.
+
+            Headers details:
+
+            block_name: id of ora block
+            student_id: anonymized student id
+            status: string indicating the current step or status the student is
+                at. Eg. 'peer', 'done', 'cancelled'. Values are from the AssessmentWorkflow
+                STEPS + STATUSES
+            is_<STEP>_complete: boolean 'complete' status for STEP (0 or 1, or
+                empty if workflow does not include this step)
+            is_<STEP>_graded: boolean 'graded' status for STEP (0 or 1, or
+                empty if workflow does not include this step)
+            num_peers_graded: number of peers that 'student_id' has graded in the peer step
+            num_graded_by_peers: number of peer grades that 'student_id' has received in the peer step
+            is_staff_grade_received: boolean (0 or 1)
+            is_final_grade_received: boolean (0 or 1)
+            final_grade_points_earned: number of points earned in final grade.
+                will be empty if no final grade yet
+            final_grade_points_possible: max number of points possible for
+                final grade. will be empty if no final grade
+        """
+
+        items = AssessmentWorkflow.objects.filter(course_id=course_id)
+
+        # need the workflow steps set and sorted here so the data columns line
+        # up with the headers
+        steps = sorted(AssessmentWorkflow.STEPS)
+
+        rows = []
+        for aw in items:
+            statuses = aw.status_details()
+            submission_dict = sub_api.get_submission_and_student(aw.submission_uuid)
+
+            steps_statuses = []
+            peers_graded = 0
+            graded_by_count = 0
+            for step in steps:
+                if not statuses.get(step):
+                    # if no status for step, then the 'complete' and 'graded'
+                    # statuses should be empty.
+                    steps_statuses.append('')
+                    steps_statuses.append('')
+                    continue
+
+                # if we get to here, then a status exists for `step`
+
+                if statuses[step]['complete']:
+                    steps_statuses.append(1)
+                else:
+                    steps_statuses.append(0)
+
+                if statuses[step]['graded']:
+                    steps_statuses.append(1)
+                else:
+                    steps_statuses.append(0)
+
+                # the peer step is special and has extra metadata
+                if step == 'peer':
+                    peers_graded = statuses[step]['peers_graded_count'] or 0
+                    graded_by_count = statuses[step]['graded_by_count'] or 0
+
+            is_staff_grade_received = 1 if aw.staff_score_exists() else 0
+            is_final_grade_received = 1 if aw.status == AssessmentWorkflow.STATUS.done else 0
+
+            score = aw.score
+            if score is not None:
+                final_grade_points_earned = score['points_earned']
+                final_grade_points_possible = score['points_possible']
+            else:
+                final_grade_points_earned = ''
+                final_grade_points_possible = ''
+
+            row = [
+                aw.item_id,
+                submission_dict['student_item']['student_id'],
+                aw.status,
+            ] + steps_statuses + [
+                peers_graded,
+                graded_by_count,
+                is_staff_grade_received,
+                is_final_grade_received,
+                final_grade_points_earned,
+                final_grade_points_possible,
+            ]
+            rows.append(row)
+
+        steps_headers = list(chain.from_iterable((
+            (
+                "is_{}_complete".format(step),
+                "is_{}_graded".format(step),
+            )
+            for step in steps
+        )))
+
+        header = [
+            'block_name',
+            'student_id',
+            'status',
+        ] + steps_headers + [
+            'num_peers_graded',
+            'num_graded_by_peers',
+            'is_staff_grade_received',
+            'is_final_grade_received',
+            'final_grade_points_earned',
+            'final_grade_points_possible',
+        ]
+
+        return header, rows
+
+    @classmethod
     def collect_ora2_responses(cls, course_id, desired_statuses=None):
         """
         Get information about all ora2 blocks in the course with response count for each step
@@ -548,3 +722,74 @@ class OraAggregateData:
                 result[item_id][status] += 1
 
         return result
+
+    @classmethod
+    def generate_assessment_data(cls, xblock_id, submission_uuid=None):
+        """
+        Generates an OrderedDict for each submission and/or assessment for the given user state.
+
+        Arguments:
+        * xblock_id: unique identifier for the current XBlock
+        * submission_uuid: unique identifier for the submission, or None
+        """
+        row = OrderedDict()
+        row[_('Item ID')] = xblock_id
+        row[_('Submission ID')] = submission_uuid or ''
+
+        submission = None
+        if submission_uuid:
+            submission = sub_api.get_submission_and_student(submission_uuid)
+
+        if not submission:
+            # If no submission, just report block Item ID.
+            yield row
+            return
+
+        student_item = submission['student_item']
+        row[_('Anonymized Student ID')] = student_item['student_id']
+
+        assessments = cls._use_read_replica(
+            Assessment.objects.prefetch_related('parts').
+            prefetch_related('rubric').
+            filter(
+                submission_uuid=submission['uuid']
+            )
+        )
+        if assessments:
+            scores = Assessment.scores_by_criterion(assessments)
+            median_scores = Assessment.get_median_score_dict(scores)
+        else:
+            # If no assessments, just report submission data.
+            median_scores = []
+            assessments = [None]
+
+        score = sub_api.get_score(student_item) or {}
+        feedback_cell = cls._build_feedback_cell(submission_uuid)
+        response_files = cls._build_response_file_links(submission)
+
+        for assessment in assessments:
+            assessment_row = row.copy()
+            if assessment:
+                assessment_cells = cls._build_assessment_parts_array(assessment, median_scores)
+                feedback_options_cell = cls._build_feedback_options_cell([assessment])
+
+                score_created_at = score.get('created_at', '')
+                if score_created_at:
+                    scoe_created_at = score_created_at.strftime('%F %T')
+
+                assessment_row[_('Assessment ID')] = assessment.id
+                assessment_row[_('Assessment Scored Date')] = assessment.scored_at.strftime('%F')
+                assessment_row[_('Assessment Scored Time')] = assessment.scored_at.strftime('%T')
+                assessment_row[_('Assessment Type')] = assessment.score_type
+                assessment_row[_('Anonymous Scorer Id')] = assessment.scorer_id
+                assessment_row.update(assessment_cells)
+                assessment_row[_('Overall Feedback')] = assessment.feedback or ''
+                assessment_row[_('Assessment Scored At')] = assessment.scored_at.strftime('%F %T')
+                assessment_row[_('Date/Time Final Score Given')] = score_created_at
+                assessment_row[_('Final Score Earned')] = score.get('points_earned', '')
+                assessment_row[_('Final Score Possible')] = score.get('points_possible', '')
+                assessment_row[_('Feedback Statements Selected')] = feedback_options_cell
+                assessment_row[_('Feedback on Assessment')] = feedback_cell
+
+            assessment_row[_('Response Files')] = response_files
+            yield assessment_row

@@ -22,7 +22,7 @@ idna==2.8                 # via -c requirements/constraints.txt, requests
 importlib-metadata==1.6.0  # via path
 jsonfield2==3.0.3         # via -c requirements/constraints.txt, -r requirements/base.in, edx-submissions
 lazy==1.4                 # via -r requirements/base.in
-libsass==0.20.0           # via -r requirements/base.in
+libsass==0.19.4           # via -r requirements/base.in
 loremipsum==1.0.5         # via -c requirements/constraints.txt, -r requirements/base.in
 lxml==4.5.1               # via -r requirements/base.in, xblock
 markupsafe==1.1.1         # via xblock

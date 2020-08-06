@@ -393,6 +393,19 @@ class SubmissionMixin:
         """
         if 'contentType' not in data or 'filename' not in data:
             return {'success': False, 'msg': self._(u"There was an error uploading your file.")}
+
+        if not self.allow_multiple_files:
+
+            # Here we check if there are existing file uploads by checking for
+            # an existing download url for any of the upload slots.
+            # Note that we can't use self.saved_files_descriptions because that
+            # is populated before files are uploaded
+            for i in range(self.MAX_FILES_COUNT):
+                file_url = self._get_download_url(i)
+                if file_url:
+                    return {'success': False,
+                            'msg': self._(u"Only a single file upload is allowed for this assessment.")}
+
         content_type = data['contentType']
         file_name = data['filename']
         file_name_parts = file_name.split('.')
@@ -483,7 +496,8 @@ class SubmissionMixin:
         """
         return file_upload_api.get_student_file_key(self.get_student_item_dict(), index=num)
 
-    def _get_url_by_file_key(self, key):
+    @classmethod
+    def _get_url_by_file_key(cls, key):
         """
         Return download url for some particular file key.
 
@@ -500,7 +514,8 @@ class SubmissionMixin:
 
         return url
 
-    def get_download_urls_from_submission(self, submission):
+    @classmethod
+    def get_download_urls_from_submission(cls, submission):
         """
         Returns a download URLs for retrieving content within a submission.
 
@@ -521,7 +536,7 @@ class SubmissionMixin:
             descriptions = submission['answer'].get('files_descriptions', [])
             file_names = submission['answer'].get('files_name', submission['answer'].get('files_names', []))
             for idx, key in enumerate(file_keys):
-                file_download_url = self._get_url_by_file_key(key)
+                file_download_url = cls._get_url_by_file_key(key)
                 if file_download_url:
                     file_description = descriptions[idx].strip() if idx < len(descriptions) else ''
                     try:
@@ -532,7 +547,7 @@ class SubmissionMixin:
                     urls.append((file_download_url, file_description, file_name, False))
         elif 'file_key' in submission['answer']:
             key = submission['answer'].get('file_key', '')
-            file_download_url = self._get_url_by_file_key(key)
+            file_download_url = cls._get_url_by_file_key(key)
             if file_download_url:
                 urls.append((file_download_url, '', '', False))
         return urls
@@ -707,6 +722,7 @@ class SubmissionMixin:
             context["submission_due"] = due_date
 
         context['file_upload_type'] = self.file_upload_type
+        context['allow_multiple_files'] = self.allow_multiple_files
         context['allow_latex'] = self.allow_latex
 
         file_urls = None
