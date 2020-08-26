@@ -39,13 +39,13 @@
                 </li>
                 <li class="field comp-setting-entry">
                     <div class="wrapper-comp-setting">
-                        <label for="peer_assessment_enable_flexible_grading" class="setting-label">{% trans "Enable Flexible Peer Grade Averaging"%}</label>
+                        <label for="peer_assessment_enable_flexible_grading" class="setting-label">{% trans "Enable Flexible Peer Grade Averaging" %}</label>
                         <select id="peer_assessment_enable_flexible_grading" class="input setting-input">
-                            <option value="0">{% trans "False"%}</option>
-                            <option value="1" {% if assessments.peer_assessment.enable_flexible_grading %}selected="true"{% endif %}>{% trans "True"%}</option>
+                            <option value="0">{% trans "False" %}</option>
+                            <option value="1" {% if assessments.peer_assessment.enable_flexible_grading %}selected="true"{% endif %}>{% trans "True" %}</option>
                         </select>
                     </div>
-                    <p class="setting-help">{% trans "Learners who have received a minimum of {floor-30% of required peer-reviews configuration value} who have waited longer than 7 days will be given their grade instead of having to wait longer for more peer reviews"%}</p>
+                    <p class="setting-help">{% trans "Learners who have received a minimum of {floor-30% of required peer-reviews configuration value} who have waited longer than 7 days will be given their grade instead of having to wait longer for more peer reviews" %}</p>
                 </li>
                 <li class="field comp-setting-entry">
                   <div class="wrapper-comp-setting">
