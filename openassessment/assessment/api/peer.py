@@ -59,6 +59,33 @@ def submitter_is_finished(submission_uuid, peer_requirements):
         raise PeerAssessmentRequestError(u'Requirements dict must contain "must_grade" key')
 
 
+def _has_enough_assessment(total_assessments, workflow_created_at, peer_requirements):
+    """
+    Check if a workflow has enough number of peer assessments.
+
+    Args:
+        total_assessments (int): Total number of assessment received on a workflow
+        workflow_created_at (Datetime): Workflow creation time
+        peer_requirements (dict): Dictionary with the key "must_grade" indicating
+            the required number of submissions the student must grade.
+
+    Returns:
+        bool
+    """
+
+    flexible_grading_days = peer_requirements.get('flexible_grading_days', 7)
+    flexible_grading_percentage = peer_requirements.get('flexible_grading_graded_by_percentage', 30)
+
+    required_peer_grades = peer_requirements["must_be_graded_by"]
+
+    if peer_requirements.get("enable_flexible_grading"):
+        days_elapsed = (timezone.now().date() - workflow_created_at.date()).days
+        if days_elapsed >= flexible_grading_days:
+            required_peer_grades = int(peer_requirements["must_be_graded_by"] * flexible_grading_percentage / 100)
+
+    return total_assessments >= required_peer_grades
+
+
 def assessment_is_finished(submission_uuid, peer_requirements):
     """
     Check whether the submitter has received enough assessments
@@ -89,7 +116,7 @@ def assessment_is_finished(submission_uuid, peer_requirements):
         assessment__submission_uuid=submission_uuid,
         assessment__score_type=PEER_TYPE
     )
-    return scored_items.count() >= peer_requirements["must_be_graded_by"]
+    return _has_enough_assessment(scored_items.count(), workflow.created_at, peer_requirements)
 
 
 def on_start(submission_uuid):
@@ -149,8 +176,6 @@ def get_score(submission_uuid, peer_requirements):
         contributing_assessments information, along with a None staff_id.
 
     """
-    FLEXIBLE_GRADING_DAYS = 7
-    FLEXIBLE_GRADE_FACTOR = 0.7
 
     if peer_requirements is None:
         return None
@@ -172,17 +197,7 @@ def get_score(submission_uuid, peer_requirements):
     ).order_by('-assessment')
 
     # Check if enough peers have graded this submission
-    required_peer_grades = peer_requirements["must_be_graded_by"]
-
-    # If flexible grading is enabled, we might present the score earlier and
-    # the number of required peer grades is reduced.
-    days_elapsed = (timezone.now().date() - workflow.created_at.date()).days
-
-    if peer_requirements.get("enable_flexible_grading") and days_elapsed >= FLEXIBLE_GRADING_DAYS:
-        required_peer_grades = int(peer_requirements["must_be_graded_by"] * FLEXIBLE_GRADE_FACTOR)
-
-    submission_finished = items.count() >= required_peer_grades
-    if not submission_finished:
+    if not _has_enough_assessment(items.count(), workflow.created_at, peer_requirements):
         return None
 
     # Unfortunately, we cannot use update() after taking a slice,
