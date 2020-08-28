@@ -1582,7 +1582,7 @@ class TestPeerApi(CacheResetTest):
                     'enable_flexible_grading': True
                 },
                 timezone.now() - datetime.timedelta(days=8),
-                True # Should grade
+                True  # Should grade
             ),
             (
                 {
@@ -1590,7 +1590,7 @@ class TestPeerApi(CacheResetTest):
                     'must_be_graded_by': required_graded_by
                 },
                 timezone.now() - datetime.timedelta(days=8),
-                False # flexible grading not enabled, shouldn't grade
+                False  # flexible grading not enabled, shouldn't grade
             ),
             (
                 {
@@ -1599,7 +1599,7 @@ class TestPeerApi(CacheResetTest):
                     'enable_flexible_grading': True
                 },
                 timezone.now() - datetime.timedelta(days=5),
-                False # only 5 days old submission, shouldn't grade
+                False  # only 5 days old submission, shouldn't grade
             )
         ]
 
@@ -1609,12 +1609,18 @@ class TestPeerApi(CacheResetTest):
 
             # create some submission and students
             for i in range(10):
-                user_submissions.append(self._create_student_and_submission('Student{}'.format(i), 'Student{} submission'.format(i), date=submission_date))
+                user_submissions.append(
+                    self._create_student_and_submission(
+                        'Student{}'.format(i),
+                        'Student{} submission'.format(i),
+                        date=submission_date
+                    )
+                )
 
             # make workflow date equals to the submission_date.
             # We need this because we depend on workflow.created_at to determine
             # if the submission is min 7 days old
-            for i in range(len(user_submissions)):
+            for i, _ in enumerate(user_submissions):
                 sub, _ = user_submissions[i]
                 workflow = PeerWorkflow.get_by_submission_uuid(sub['uuid'])
                 workflow.created_at = submission_date
@@ -1639,7 +1645,7 @@ class TestPeerApi(CacheResetTest):
 
             if is_graded:
                 assert score is not None
-                assert type(score) == dict
+                assert isinstance(score, dict)
             else:
                 assert score is None
 

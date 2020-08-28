@@ -142,9 +142,9 @@ OpenAssessment.EditPeerAssessmentView.prototype = {
      boolean
     **/
     enableFlexibleGrading: function(isEnabled) {
-        var sel = $('#peer_assessment_enable_flexible_grading', this.element);
-        if (isEnabled !== undefined) { self.val(isEnabled ? "0" : "1") }
-        return sel.val() === "1";
+        var self = $('#peer_assessment_enable_flexible_grading', this.element);
+        if (isEnabled !== undefined) {self.val(isEnabled ? '0' : '1');}
+        return self.val() === '1';
     },
 
     /**
