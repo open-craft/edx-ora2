@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-ora2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-02 10:21-0400\n"
+"POT-Creation-Date: 2020-09-04 10:40-0400\n"
 "PO-Revision-Date: 2014-06-04 15:41-0400\n"
 "Last-Translator: Muhammad Ayub khan <ayubkhan@edx.org>\n"
 "Language-Team: openedx-translation <openedx-translation@googlegroups.com>\n"
@@ -133,11 +133,13 @@ msgstr ""
 
 #: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html:67
 #: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html:105
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:45
 msgid "False"
 msgstr ""
 
 #: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html:68
 #: openassessment/templates/openassessmentblock/edit/oa_edit_basic_settings_list.html:106
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:46
 msgid "True"
 msgstr ""
 
@@ -290,75 +292,100 @@ msgstr ""
 msgid "Option Explanation"
 msgstr ""
 
-#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:9
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:10
 msgid "Step: Peer Assessment"
 msgstr ""
 
-#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:14
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:15
 msgid ""
 "Peer Assessment allows students to provide feedback to other students and "
 "also receive feedback from others in their final grade. Often, though not "
 "always, this step is preceded by Self Assessment or Learner Training steps."
 msgstr ""
 
-#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:17
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:18
 msgid ""
 "Configuration: For this step to be configured you must specify the number of "
 "peer reviews a student will be assessed with, and the number of peer a "
 "student must grade. Additional options can be specified."
 msgstr ""
 
-#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:22
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:23
 msgid "View Options & Configuration"
 msgstr ""
 
-#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:28
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:29
 msgid "Must Grade"
 msgstr ""
 
-#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:31
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:32
 msgid ""
 "Specify the number of peer assessments that each learner must complete. "
 "Valid numbers are 0 to 99."
 msgstr ""
 
-#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:35
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:36
 msgid "Graded By"
 msgstr ""
 
-#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:38
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:39
 msgid ""
 "Specify the number of learners that each response must be assessed by. Valid "
 "numbers are 0 to 99."
 msgstr ""
 
-#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment_schedule.html:5
-msgid "Peer Assessment Deadlines"
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:43
+msgid "Enable Flexible Peer Grade Averaging"
 msgstr ""
 
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:49
+#, python-format
+msgid ""
+"Learners who have received a minimum of {floor-30%% of required peer-reviews "
+"configuration value} who have waited longer than 7 days will be given their "
+"grade instead of having to wait longer for more peer reviews"
+msgstr ""
+
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:53
 #: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment_schedule.html:10
 #: openassessment/templates/openassessmentblock/edit/oa_edit_self_assessment_schedule.html:10
 msgid "Start Date"
 msgstr ""
 
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:62
 #: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment_schedule.html:19
 #: openassessment/templates/openassessmentblock/edit/oa_edit_self_assessment_schedule.html:19
 msgid "Start Time"
 msgstr ""
 
-#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment_schedule.html:27
-msgid "The date and time when learners can begin assessing peer responses."
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:70
+msgid ""
+"Enter the date and time when learners can begin assessing peer responses."
 msgstr ""
 
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:74
 #: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment_schedule.html:31
 #: openassessment/templates/openassessmentblock/edit/oa_edit_self_assessment_schedule.html:31
 #: openassessment/templates/openassessmentblock/staff_area/oa_staff_area.html:109
 msgid "Due Date"
 msgstr ""
 
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:83
 #: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment_schedule.html:40
 #: openassessment/templates/openassessmentblock/edit/oa_edit_self_assessment_schedule.html:40
 msgid "Due Time"
+msgstr ""
+
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment.html:91
+msgid "Enter the date and time when all peer assessments must be complete."
+msgstr ""
+
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment_schedule.html:5
+msgid "Peer Assessment Deadlines"
+msgstr ""
+
+#: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment_schedule.html:27
+msgid "The date and time when learners can begin assessing peer responses."
 msgstr ""
 
 #: openassessment/templates/openassessmentblock/edit/oa_edit_peer_assessment_schedule.html:48
