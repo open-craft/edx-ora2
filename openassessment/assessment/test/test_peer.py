@@ -1565,6 +1565,84 @@ class TestPeerApi(CacheResetTest):
                 REQUIRED_GRADED_BY
             )
 
+    def test_flexible_peer_grade_averaging(self):
+        """Test if flexible peer grad averaging works.
+
+        Even though required_graded_by is set to 10, as flexible grading enabled,
+        if the submission is 7 days old and there is already 3 peer assessment provided,
+        it should grade the student submission without any more wait.
+        """
+
+        required_graded_by = 10
+        tests = [
+            (
+                {
+                    'must_grade': 1,
+                    'must_be_graded_by': required_graded_by,
+                    'enable_flexible_grading': True
+                },
+                timezone.now() - datetime.timedelta(days=8),
+                True # Should grade
+            ),
+            (
+                {
+                    'must_grade': 1,
+                    'must_be_graded_by': required_graded_by
+                },
+                timezone.now() - datetime.timedelta(days=8),
+                False # flexible grading not enabled, shouldn't grade
+            ),
+            (
+                {
+                    'must_grade': 1,
+                    'must_be_graded_by': required_graded_by,
+                    'enable_flexible_grading': True
+                },
+                timezone.now() - datetime.timedelta(days=5),
+                False # only 5 days old submission, shouldn't grade
+            )
+        ]
+
+        for requirements, submission_date, is_graded in tests:
+
+            user_submissions = []
+
+            # create some submission and students
+            for i in range(10):
+                user_submissions.append(self._create_student_and_submission('Student{}'.format(i), 'Student{} submission'.format(i), date=submission_date))
+
+            # make workflow date equals to the submission_date.
+            # We need this because we depend on workflow.created_at to determine
+            # if the submission is min 7 days old
+            for i in range(len(user_submissions)):
+                sub, _ = user_submissions[i]
+                workflow = PeerWorkflow.get_by_submission_uuid(sub['uuid'])
+                workflow.created_at = submission_date
+                workflow.save()
+
+            # Do peer 3 assessment on 1st submission
+            for i in range(4):
+                sub, student = user_submissions[i]
+                peer_api.get_submission_to_assess(sub['uuid'], student['student_id'])
+                peer_api.create_assessment(
+                    sub['uuid'],
+                    student['student_id'],
+                    ASSESSMENT_DICT['options_selected'],
+                    ASSESSMENT_DICT['criterion_feedback'],
+                    ASSESSMENT_DICT['overall_feedback'],
+                    RUBRIC_DICT,
+                    required_graded_by
+                )
+
+            # check grade of 1st submission.
+            score = peer_api.get_score(user_submissions[0][0]['uuid'], requirements)
+
+            if is_graded:
+                assert score is not None
+                assert type(score) == dict
+            else:
+                assert score is None
+
     @staticmethod
     def _create_student_and_submission(student, answer, date=None):
         """ Creats a student and submission for tests. """
