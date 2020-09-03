@@ -1566,7 +1566,8 @@ class TestPeerApi(CacheResetTest):
             )
 
     def test_flexible_peer_grade_averaging(self):
-        """Test if flexible peer grad averaging works.
+        """
+        Test if flexible peer grad averaging works.
 
         Even though required_graded_by is set to 10, as flexible grading enabled,
         if the submission is 7 days old and there is already 3 peer assessment provided,

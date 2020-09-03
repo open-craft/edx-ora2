@@ -23,9 +23,13 @@ logger = logging.getLogger("openassessment.assessment.api.peer")  # pylint: disa
 
 PEER_TYPE = "PE"
 
+FLEXIBLE_PEER_GRADING_REQUIRED_SUBMISSION_AGE_IN_DAYS =  7
+FLEXIBLE_PEER_GRADING_GRADED_BY_PERCENTAGE = 30
+
 
 def required_peer_grades(submission_uuid, peer_requirements):
-    """Given a submission id, finds how many peer assessment required.
+    """
+    Given a submission id, finds how many peer assessment required.
 
     Args:
         submission_uuid (str): The UUID of the submission being tracked.
@@ -37,11 +41,7 @@ def required_peer_grades(submission_uuid, peer_requirements):
         int
     """
 
-    # get the submission
     submission = sub_api.get_submission(submission_uuid)
-
-    flexible_grading_days = peer_requirements.get('flexible_grading_days', 7)
-    flexible_grading_percentage = peer_requirements.get('flexible_grading_graded_by_percentage', 30)
 
     must_grade = peer_requirements["must_be_graded_by"]
 
@@ -51,8 +51,8 @@ def required_peer_grades(submission_uuid, peer_requirements):
         days_elapsed = (timezone.now().date() - submission['submitted_at'].date()).days
 
         # check if flexible grading applies. if it does, then update must_grade
-        if days_elapsed >= flexible_grading_days:
-            must_grade = int(must_grade * flexible_grading_percentage / 100)
+        if days_elapsed >= FLEXIBLE_PEER_GRADING_REQUIRED_SUBMISSION_AGE_IN_DAYS:
+            must_grade = int(must_grade * FLEXIBLE_PEER_GRADING_GRADED_BY_PERCENTAGE / 100)
 
     return must_grade
 
