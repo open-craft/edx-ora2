@@ -14,8 +14,7 @@ Object.assign(config, {
   entry: {
     "openassessment-lms": path.resolve(process.cwd(), 'openassessment/xblock/static/js/src/lms_index.js'),
     "openassessment-studio": path.resolve(process.cwd(), 'openassessment/xblock/static/js/src/studio_index.js'),
-    "openassessment-editor-textarea": path.resolve(process.cwd(), 'openassessment/xblock/static/js/src/lms/editors/oa_editor_textarea.js'),
-    "openassessment-editor-tinymce": path.resolve(process.cwd(), 'openassessment/xblock/static/js/src/lms/editors/oa_editor_tinymce.js'),
+    "openassessment-editor-textarea": path.resolve(process.cwd(), 'openassessment/xblock/static/js/src/lms/editors/oa_editor_textarea.js')
   },
   output: {
     path: path.resolve(process.cwd(), 'openassessment/xblock/static/js'),

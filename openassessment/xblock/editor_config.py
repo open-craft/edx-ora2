@@ -10,10 +10,6 @@ default_editors = {
         'display_name': 'Simple Text Editor',
         'js': ['/xblock/resource/openassessment/static/js/openassessment-editor-textarea.js'],
     },
-    'tinymce': {
-        'display_name': 'WYSIWYG Editor',
-        'js': ['/xblock/resource/openassessment/static/js/openassessment-editor-tinymce.js'],
-    },
 }
 
 AVAILABLE_EDITORS = {}
