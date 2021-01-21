@@ -4,7 +4,6 @@ Schema for validating and sanitizing data received from the JavaScript client.
 
 import dateutil
 from pytz import utc
-from openassessment.xblock.editor_config import AVAILABLE_EDITORS
 
 from voluptuous import (
     All,
@@ -16,6 +15,7 @@ from voluptuous import (
     Required,
     Schema,
 )
+from openassessment.xblock.editor_config import AVAILABLE_EDITORS
 
 
 def utf8_validator(value):

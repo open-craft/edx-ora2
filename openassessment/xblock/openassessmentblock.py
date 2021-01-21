@@ -11,7 +11,6 @@ import pkg_resources
 import pytz
 
 from django.conf import settings
-from django.contrib.staticfiles import finders
 from django.template.loader import get_template
 
 from bleach.sanitizer import Cleaner
