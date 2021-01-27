@@ -157,7 +157,7 @@ class StudioMixin:
             'feedbackprompt': self.rubric_feedback_prompt,
             'feedback_default_text': feedback_default_text,
             'text_response': self.text_response if self.text_response else '',
-            'text_response_editor': self.text_response_editor if self.text_response_editor else '',
+            'text_response_editor': self.text_response_editor if self.text_response_editor else 'text',
             'file_upload_response': self.file_upload_response if self.file_upload_response else '',
             'necessity_options': self.NECESSITY_OPTIONS,
             'available_editor_options': self.AVAILABLE_EDITOR_OPTIONS,
