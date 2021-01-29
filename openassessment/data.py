@@ -23,7 +23,6 @@ from submissions.errors import SubmissionNotFoundError
 from openassessment.assessment.models import Assessment, AssessmentFeedback, AssessmentPart
 from openassessment.fileupload.api import get_download_url
 from openassessment.workflow.models import AssessmentWorkflow, TeamAssessmentWorkflow
-from openassessment.xblock.openassessmentblock import OpenAssessmentBlock
 
 
 class CsvWriter:
@@ -585,6 +584,7 @@ class OraAggregateData:
         sep = "\n"
         base_url = getattr(settings, 'LMS_ROOT_URL', '')
 
+        from openassessment.xblock.openassessmentblock import OpenAssessmentBlock
         file_downloads = OpenAssessmentBlock.get_download_urls_from_submission(submission)
         for url, _description, _filename, _show_delete in file_downloads:
             if file_links:
