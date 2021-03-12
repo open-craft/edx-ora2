@@ -6,6 +6,7 @@ import logging
 from django.conf import settings
 
 import boto
+from botocore.config import Config as BotoConfig
 
 from ..exceptions import FileUploadInternalError
 from .base import BaseBackend
@@ -70,7 +71,9 @@ def _connect_to_s3():
     aws_access_key_id = getattr(settings, 'AWS_ACCESS_KEY_ID', None)
     aws_secret_access_key = getattr(settings, 'AWS_SECRET_ACCESS_KEY', None)
 
+    config = BotoConfig(signature_version='v4')
     return boto.connect_s3(
         aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key
+        aws_secret_access_key=aws_secret_access_key,
+        config=config,
     )
