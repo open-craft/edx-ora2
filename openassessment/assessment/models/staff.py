@@ -63,13 +63,14 @@ class StaffWorkflow(models.Model):
         return self.submission_uuid
 
     @classmethod
-    def get_workflow_statistics(cls, course_id, item_id):
+    def get_workflow_statistics(cls, course_id, item_id, from_teams=None):
         """
         Returns the number of graded, ungraded, and in-progress submissions for staff grading.
 
         Args:
             course_id (str): The course that this problem belongs to
             item_id (str): The student_item (problem) that we want to know statistics about.
+            from_teams(Teams QuerySet): A queryset of Teams to restricted the counting to
 
         Returns:
             dict: a dictionary that contains the following keys: 'graded', 'ungraded', and 'in-progress'
@@ -78,16 +79,19 @@ class StaffWorkflow(models.Model):
         timeout = (now() - cls.TIME_LIMIT).strftime("%Y-%m-%d %H:%M:%S")
         ungraded = cls.objects.filter(
             models.Q(grading_started_at=None) | models.Q(grading_started_at__lte=timeout),
-            course_id=course_id, item_id=item_id, grading_completed_at=None, cancelled_at=None
+            course_id=course_id, item_id=item_id, grading_completed_at=None, cancelled_at=None,
+            teams_in=from_teams
         ).count()
 
         in_progress = cls.objects.filter(
             course_id=course_id, item_id=item_id, grading_completed_at=None, cancelled_at=None,
-            grading_started_at__gt=timeout
+            grading_started_at__gt=timeout, 
+            teams_in=from_teams
         ).count()
 
         graded = cls.objects.filter(
-            course_id=course_id, item_id=item_id, cancelled_at=None
+            course_id=course_id, item_id=item_id, cancelled_at=None,
+            teams_in=from_teams
         ).exclude(grading_completed_at=None).count()
 
         return {'ungraded': ungraded, 'in-progress': in_progress, 'graded': graded}
