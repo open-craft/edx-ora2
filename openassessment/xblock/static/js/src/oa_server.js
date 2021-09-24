@@ -23,6 +23,7 @@ export class Server {
     this.studentInfo = this.studentInfo.bind(this);
     this.staffGradeForm = this.staffGradeForm.bind(this);
     this.staffGradeCounts = this.staffGradeCounts.bind(this);
+    this.staffGradeCountsFilteredByTeams = this.staffGradeCountsFilteredByTeams.bind(this);
     this.submit = this.submit.bind(this);
     this.save = this.save.bind(this);
     this.submitFeedbackOnAssessment = this.submitFeedbackOnAssessment.bind(this);
@@ -168,6 +169,30 @@ export class Server {
    */
   staffGradeCounts() {
     const url = this.url('render_staff_grade_counts');
+    return $.Deferred((defer) => {
+      $.ajax({
+        url,
+        type: 'POST',
+        dataType: 'html',
+      }).done(function (data) {
+        defer.resolveWith(this, [data]);
+      }).fail(function () {
+        defer.rejectWith(
+          this, [gettext('The display of ungraded and checked out responses could not be loaded.')],
+        );
+      });
+    }).promise();
+  }
+
+  /**
+   * Renders the count of ungraded and checked out assessemtns, 
+   * but counting only students in the same teams as the staff member requesting it
+   *
+   * @returns {promise} A JQuery promise, which resolves with the HTML of the rendered section
+   *     fails with an error message.
+   */
+  staffGradeCountsFilteredByTeams() {
+    const url = this.url('render_staff_grade_counts_filtered_by_teams');
     return $.Deferred((defer) => {
       $.ajax({
         url,

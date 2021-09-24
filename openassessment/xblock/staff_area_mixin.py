@@ -161,13 +161,15 @@ class StaffAreaMixin:
         return path, context
 
     @staticmethod
-    def get_staff_assessment_statistics_context(course_id, item_id):
+    def get_staff_assessment_statistics_context(course_id, item_id, from_teams=None):
         """
         Returns a context with staff assessment "ungraded" and "in-progress" counts.
         """
         # Import is placed here to avoid model import at project startup.
         from openassessment.assessment.api import staff as staff_api
-        grading_stats = staff_api.get_staff_grading_statistics(course_id, item_id)
+
+        # if from_teams, get grading stats only for the given teams
+        grading_stats = staff_api.get_staff_grading_statistics(course_id, item_id, from_teams=from_teams)
 
         return {
             'staff_assessment_ungraded': grading_stats['ungraded'],
@@ -371,6 +373,32 @@ class StaffAreaMixin:
 
         except PeerAssessmentInternalError:
             return self.render_error(self._("Error getting staff grade ungraded and checked out counts."))
+
+    @XBlock.handler
+    @require_course_staff("STUDENT_GRADE")
+    def render_staff_grade_counts_filtered_by_teams(self, data, suffix=''):  # pylint: disable=W0613
+        """
+        Renders a form to show the number of ungraded and checked out assessments,
+        considering team affiliation.
+
+        Must be course staff to render this view.
+        """
+        try:
+            student_item_dict = self.get_student_item_dict()
+
+            # get teams from staff member
+            from_teams = Teams.objects.filter(user_id=staff_id)
+
+            context = self.get_staff_assessment_statistics_context(
+                student_item_dict.get('course_id'), student_item_dict.get('item_id'), from_teams=from_teams
+            )
+
+            path = 'openassessmentblock/staff_area/oa_staff_grade_learners_count.html'
+            return self.render_assessment(path, context)
+
+        except PeerAssessmentInternalError:
+            return self.render_error(self._("Error getting staff grade ungraded and checked out counts."))
+
 
     def get_student_submission_context(self, student_username, submission):
         """
