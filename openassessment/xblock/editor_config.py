@@ -8,11 +8,11 @@ external_editors = getattr(settings, 'ORA_AVAILABLE_EDITORS', {})
 default_editors = {
     'text': {
         'display_name': 'Simple Text Editor',
-        'js': ['/xblock/resource/openassessment/static/js/openassessment-editor-textarea.js'],
+        'js': ['/xblock/resource/openassessment/static/dist/openassessment-editor-textarea.js'],
     },
     'tinymce': {
         'display_name': 'WYSIWYG Editor',
-        'js': ['/xblock/resource/openassessment/static/js/openassessment-editor-tinymce.js'],
+        'js': ['/xblock/resource/openassessment/static/dist/openassessment-editor-tinymce.js'],
     },
 }
 
