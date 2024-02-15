@@ -30,7 +30,7 @@ from openassessment.assessment.api import peer as peer_api
 from openassessment.assessment.models import Assessment, AssessmentFeedback, AssessmentPart
 from openassessment.fileupload.api import get_download_url
 from openassessment.workflow.models import AssessmentWorkflow, TeamAssessmentWorkflow
-from openassessment.assessment.score_type_constants import PEER_TYPE, SELF_TYPE, STAFF_TYPE
+from openassessment.assessment.score_type_constants import PEER_TYPE, SELF_TYPE, STAFF_TYPE, score_type_to_string
 
 logger = logging.getLogger(__name__)
 
@@ -1605,24 +1605,6 @@ class ZippedListSubmissionAnswer(OraSubmissionAnswer):
                 files.append(file_upload)
             self.file_uploads = files
         return self.file_uploads
-
-
-def score_type_to_string(score_type: str) -> str:
-    """
-    Converts the given score type into its string representation.
-
-    Args:
-        score_type (str): System representation of the score type.
-
-    Returns:
-        (str) Representation of score_type as needed in Staff Grader Template.
-    """
-    SCORE_TYPE_MAP = {
-        PEER_TYPE: "Peer",
-        SELF_TYPE: "Self",
-        STAFF_TYPE: "Staff",
-    }
-    return SCORE_TYPE_MAP.get(score_type, "Unknown")
 
 
 def parts_summary(assessment_obj: Assessment) -> List[dict]:
