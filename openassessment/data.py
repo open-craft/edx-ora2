@@ -1671,14 +1671,9 @@ def generate_assessment_from_data(submission_uuid: str) -> List[dict]:
     Returns:
         List[dict]: A list containing assessment data dictionaries.
     """
-    submission = sub_api.get_submission_and_student(submission_uuid)
-
-    if not submission:
-        return []
-
     assessments = _use_read_replica(
         Assessment.objects.filter(
-            submission_uuid=submission["uuid"]
+            submission_uuid=submission_uuid,
         )
     )
     return generate_assessment_data(assessments)
