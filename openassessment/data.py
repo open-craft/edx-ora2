@@ -15,7 +15,7 @@ from typing import List, Tuple
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db.models import CharField, F, OuterRef, Subquery
+from django.db.models import CharField, F, OuterRef, Subquery, QuerySet
 from django.db.models.functions import Coalesce
 from django.utils.translation import gettext as _
 import requests
@@ -1627,12 +1627,12 @@ def parts_summary(assessment_obj: Assessment) -> List[dict]:
     ]
 
 
-def generate_assessment_data(assessment_list: List[Assessment]) -> List[dict]:
+def generate_assessment_data(assessments: QuerySet[Assessment]) -> List[dict]:
     """
     Creates the list of Assessment's data dictionaries.
 
     Args:
-        assessment_list (List[Assessment]): assessment objects queryset.
+        assessments (QuerySet[Assessment]): assessment objects queryset.
 
     Returns:
         List[dict]: A list containing assessment data dictionaries.
@@ -1641,8 +1641,9 @@ def generate_assessment_data(assessment_list: List[Assessment]) -> List[dict]:
     user_data_mapping = map_anonymized_ids_to_user_data(
         [assessment.scorer_id for assessment in assessments]
     )
+    assessments = assessments.prefetch_related("parts").prefetch_related("rubric")
     assessment_data_list = []
-    for assessment in assessment_list:
+    for assessment in assessments:
 
         scorer = user_data_mapping.get(assessment.scorer_id, {})
 
@@ -1676,9 +1677,7 @@ def generate_assessment_from_data(submission_uuid: str) -> List[dict]:
         return []
 
     assessments = _use_read_replica(
-        Assessment.objects.prefetch_related("parts").
-        prefetch_related("rubric").
-        filter(
+        Assessment.objects.filter(
             submission_uuid=submission["uuid"]
         )
     )
@@ -1712,9 +1711,7 @@ def generate_assessment_to_data(item_id: str, submission_uuid: str) -> List[dict
     submission_uuids = [sub["uuid"] for sub in submissions]
 
     assessments_made_by_student = _use_read_replica(
-        Assessment.objects.prefetch_related("parts")
-        .prefetch_related("rubric")
-        .filter(scorer_id=scorer_id, submission_uuid__in=submission_uuids)
+        Assessment.objects.filter(scorer_id=scorer_id, submission_uuid__in=submission_uuids)
     )
 
     return generate_assessment_data(assessments_made_by_student)
