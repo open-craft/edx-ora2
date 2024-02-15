@@ -1627,47 +1627,30 @@ def parts_summary(assessment_obj: Assessment) -> List[dict]:
     ]
 
 
-def get_scorer_data(anonymous_scorer_id: str, user_data_mapping: dict) -> Tuple[str, str, str]:
-    """
-    Retrieves the scorer's data (full name, username, and email) based on their anonymous ID.
-
-    Args:
-        anonymous_scorer_id (str): Scorer's anonymous_user_id.
-        user_data_mapping (dict): User data by anonymous_user_id
-
-    Returns:
-        Tuple[str, str, str]:
-            fullname, username, email: user data values.
-    """
-    scorer_data = user_data_mapping.get(anonymous_scorer_id, {})
-    return (
-        scorer_data.get("fullname", ""),
-        scorer_data.get("username", ""),
-        scorer_data.get("email", "")
-    )
-
-
-def generate_assessment_data(assessment_list: List[Assessment], user_data_mapping: dict) -> List[dict]:
+def generate_assessment_data(assessment_list: List[Assessment]) -> List[dict]:
     """
     Creates the list of Assessment's data dictionaries.
 
     Args:
         assessment_list (List[Assessment]): assessment objects queryset.
-        user_data_mapping (dict): User data by anonymous_user_id
 
     Returns:
         List[dict]: A list containing assessment data dictionaries.
     """
+    # Fetch the user data we need in a single query
+    user_data_mapping = map_anonymized_ids_to_user_data(
+        [assessment.scorer_id for assessment in assessments]
+    )
     assessment_data_list = []
     for assessment in assessment_list:
 
-        scorer_name, scorer_username, scorer_email = get_scorer_data(assessment.scorer_id, user_data_mapping)
+        scorer = user_data_mapping.get(assessment.scorer_id, {})
 
         assessment_data_list.append({
             "assessment_id": str(assessment.id),
-            "scorer_name": scorer_name,
-            "scorer_username": scorer_username,
-            "scorer_email": scorer_email,
+            "scorer_name": scorer.get("fullname") or "",
+            "scorer_username": scorer.get("username") or "",
+            "scorer_email": scorer.get("email") or "",
             "assessment_date": str(assessment.scored_at),
             "assessment_scores": parts_summary(assessment),
             "problem_step": score_type_to_string(assessment.score_type),
@@ -1699,8 +1682,7 @@ def generate_assessment_from_data(submission_uuid: str) -> List[dict]:
             submission_uuid=submission["uuid"]
         )
     )
-    user_data_mapping = map_anonymized_ids_to_user_data([assessment.scorer_id for assessment in assessments])
-    return generate_assessment_data(assessments, user_data_mapping)
+    return generate_assessment_data(assessments)
 
 
 def generate_assessment_to_data(item_id: str, submission_uuid: str) -> List[dict]:
@@ -1735,7 +1717,4 @@ def generate_assessment_to_data(item_id: str, submission_uuid: str) -> List[dict
         .filter(scorer_id=scorer_id, submission_uuid__in=submission_uuids)
     )
 
-    user_data_mapping = map_anonymized_ids_to_user_data(
-        [assessment.scorer_id for assessment in assessments_made_by_student]
-    )
-    return generate_assessment_data(assessments_made_by_student, user_data_mapping)
+    return generate_assessment_data(assessments_made_by_student)
