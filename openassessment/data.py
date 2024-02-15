@@ -1621,7 +1621,7 @@ def parts_summary(assessment_obj: Assessment) -> List[dict]:
         {
             "criterion_name": part.criterion.name,
             "score_earned": part.points_earned,
-            "score_type": part.option.name if part.option else "None",
+            "score_type": part.option.name if part.option else _("None"),
         }
         for part in assessment_obj.parts.all()
     ]
