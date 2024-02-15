@@ -1698,7 +1698,9 @@ def generate_assessment_to_data(item_id: str, submission_uuid: str) -> List[dict
 
     scorer_id = scorer_submission["student_item"]["student_id"]
 
-    submissions = Submission.objects.filter(student_item__item_id=item_id).values("uuid")
+    submissions = _use_read_replica(
+        Submission.objects.filter(student_item__item_id=item_id).values("uuid")
+    )
 
     if not submissions:
         return []
