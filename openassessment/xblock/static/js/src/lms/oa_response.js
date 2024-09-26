@@ -165,17 +165,17 @@ export class ResponseView {
           // Override default form submission
           eventObject.preventDefault();
           $('.submission__answer__display__file', view.element).removeClass('is--hidden');
-          uploadButton.prop("disabled", true);
-          spinner.removeClass("hidden");
+          uploadButton.prop('disabled', true);
+          spinner.removeClass('hidden');
           if (view.hasAllUploadFiles()) {
             const promise = view.uploadFiles();
             promise.then(() => {
-              uploadButton.prop("disabled", false);
-              spinner.addClass("hidden");
+              uploadButton.prop('disabled', false);
+              spinner.addClass('hidden');
             });
           } else {
-            uploadButton.prop("disabled", false);
-            spinner.addClass("hidden");
+            uploadButton.prop('disabled', false);
+            spinner.addClass('hidden');
           }
         },
       );
