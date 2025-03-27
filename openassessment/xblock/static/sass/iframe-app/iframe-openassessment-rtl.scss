@@ -1,0 +1,5 @@
+// This file is compiled directly into edx-platform.
+// Compiling Paragon generates many errors, so it's omitted here.
+// The compiled styles are used when using an openassessment in an iframe.
+@import '../vendor/bi-app/bi-app-rtl';
+@import '../openassessment';
